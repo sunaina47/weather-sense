@@ -1,43 +1,37 @@
 import React, { useEffect, useRef } from "react";
 import { Card, Typography } from "antd";
 import dayjs from "dayjs";
-import "@/styles/weather.css";
+import "../styles/weather.css";
 
 const { Text } = Typography;
 
 const HourlyForecast = ({ hourly, weatherCodeDetails }) => {
   const scrollRef = useRef(null);
-
   const today = dayjs().format("DD-MMM-YYYY");
   const currentTime = dayjs();
-
-  const todaysHourlyData =
-    hourly.hourly.time === undefined
-      ? []
-      : hourly.hourly.time.filter((time) => {
-          const timeObj = dayjs(time);
-          return (
-            timeObj.format("DD-MMM-YYYY") === today &&
-            (timeObj.isAfter(currentTime) || timeObj.isSame(currentTime))
-          );
-        });
-
-  const hourlyTimeDayjs = todaysHourlyData.map((t) => dayjs(t));
-
-  const hourlyData = hourlyTimeDayjs
-    .map((time, idx) => ({
-      time,
-      temperature: hourly?.hourly.temperature_2m?.[idx],
-      temperature_unit: hourly?.hourly_units?.temperature_2m,
-      feelsLike: hourly?.hourly.apparent_temperature?.[idx],
-      feelsLike_unit: hourly?.hourly_units?.apparent_temperature,
-      precipitation: hourly.hourly.precipitation_probability?.[idx],
-      precipitation_unit: hourly?.hourly_units?.precipitation_probability,
-      windSpeed: hourly.hourly.wind_speed_10m?.[idx],
-      windSpeed_unit: hourly?.hourly_units?.wind_speed_10m,
-      weatherCode: hourly.hourly.weathercode?.[idx],
-    }))
-    .filter((entry) => entry.time.format("DD-MMM-YYYY") === today);
+  const hourlyData = hourly?.hourly?.time
+    ?.map((t, idx) => {
+      const time = dayjs(t);
+      if (
+        time.format("DD-MMM-YYYY") === today &&
+        (time.isAfter(currentTime) || time.isSame(currentTime))
+      ) {
+        return {
+          time,
+          temperature: hourly?.hourly.temperature_2m?.[idx],
+          temperature_unit: hourly?.hourly_units?.temperature_2m,
+          feelsLike: hourly?.hourly.apparent_temperature?.[idx],
+          feelsLike_unit: hourly?.hourly_units?.apparent_temperature,
+          precipitation: hourly.hourly.precipitation_probability?.[idx],
+          precipitation_unit: hourly?.hourly_units?.precipitation_probability,
+          windSpeed: hourly.hourly.wind_speed_10m?.[idx],
+          windSpeed_unit: hourly?.hourly_units?.wind_speed_10m,
+          weatherCode: hourly.hourly.weathercode?.[idx],
+        };
+      }
+      return null;
+    })
+    .filter(Boolean);
 
   // Mouse wheel to horizontal scroll
   useEffect(() => {

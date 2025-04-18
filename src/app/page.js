@@ -1,22 +1,22 @@
 "use client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Spin, message } from "antd";
-import SearchBar from "@/components/SearchBar";
 import {
+  fetchCityCoordinates,
   fetchWeatherData,
   fetchPlaceName,
-  fetchCityCoordinates,
   fetchMoonPhase,
-} from "@/utils/fetchWeather";
-import CurrentWeather from "@/components/CurrentWeather";
-import HourlyForecast from "@/components/HourlyForecast";
-import WeeklyForecast from "@/components/WeeklyForecast";
-import SunriseSunset from "@/components/SunriseSunset";
-import dynamic from "next/dynamic";
-import ClothingSuggestion from "@/components/ClothingSuggestion";
-import MoonPhase from "@/components/MoonPhases";
+} from "../utils/fetchWeatherApi";
 import dayjs from "dayjs";
-const WeatherMap = dynamic(() => import("@/components/WeatherMap"), {
+import WeeklyForecast from "../components/WeeklyForecast";
+import HourlyForecast from "../components/HourlyForecast";
+import MoonPhases from "../components/MoonPhases";
+import ClothingSuggestion from "../components/ClothingSuggestion";
+import SearchLocation from "../components/SearchLocation";
+import SunriseSunset from "../components/SunriseSunset";
+import dynamic from "next/dynamic";
+import CurrentWeather from "../components/CurrentWeather";
+const WeatherMap = dynamic(() => import("../components/WeatherMap"), {
   ssr: false,
 });
 
@@ -109,7 +109,7 @@ export default function HomePage() {
           <div style={{ display: "flex", flexWrap: "wrap" }}>
             {/* Left Panel */}
             <div style={{ flex: 3, paddingRight: 20, minWidth: 300 }}>
-              <SearchBar onSearch={handleSearch} />
+              <SearchLocation onSearch={handleSearch} />
               {weatherData && (
                 <>
                   <CurrentWeather
@@ -156,7 +156,7 @@ export default function HomePage() {
                     weatherCode={weatherData?.current?.weathercode}
                     weatherCodeDetails={weatherCodeDetails}
                   />
-                  <MoonPhase moonPhase={moonPhase} />
+                  <MoonPhases moonPhase={moonPhase} />
                 </>
               )}
             </div>

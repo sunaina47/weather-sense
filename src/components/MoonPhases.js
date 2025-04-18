@@ -27,8 +27,7 @@ const getMoonPhaseInfo = (phaseName) => {
   }
 };
 
-const MoonPhase = ({ moonPhase }) => {
-  console.log("moonPhase", moonPhase);
+const MoonPhases = ({ moonPhase }) => {
   const { phase, emoji } = getMoonPhaseInfo(moonPhase);
 
   return (
@@ -51,4 +50,4 @@ const MoonPhase = ({ moonPhase }) => {
   );
 };
 
-export default MoonPhase;
+export default MoonPhases;

@@ -1,8 +1,8 @@
-"use client";
+import React from "react";
 import { Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 
-export default function SearchBar({ onSearch, loading }) {
+const SearchLocation = ({ onSearch, loading }) => {
   const handleSearch = (value) => {
     const trimmed = value.trim();
     if (!trimmed) {
@@ -23,4 +23,6 @@ export default function SearchBar({ onSearch, loading }) {
       />
     </div>
   );
-}
+};
+
+export default SearchLocation;

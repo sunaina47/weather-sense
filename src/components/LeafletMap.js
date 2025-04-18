@@ -36,7 +36,6 @@ const SetMapCenter = ({ coords }) => {
 };
 
 const LeafletMap = ({ coords }) => {
-  console.log("co", coords);
   return (
     <MapContainer
       center={[coords.lat, coords.lon]}
