@@ -15,6 +15,7 @@ import ClothingSuggestion from "../components/ClothingSuggestion";
 import SearchLocation from "../components/SearchLocation";
 import SunriseSunset from "../components/SunriseSunset";
 import dynamic from "next/dynamic";
+import "../styles/weather.css";
 import CurrentWeather from "../components/CurrentWeather";
 const WeatherMap = dynamic(() => import("../components/WeatherMap"), {
   ssr: false,
@@ -27,6 +28,7 @@ export default function HomePage() {
   const [moonPhase, setMoonPhase] = useState("");
   const [coords, setCoords] = useState("");
   const [error, setError] = useState("");
+  const [messageApi, contextHolder] = message.useMessage();
 
   const getWeather = async (lat, lon, place) => {
     setLoading(true);
@@ -39,7 +41,12 @@ export default function HomePage() {
       setPlaceName(place);
       setError("");
     } else {
-      message.error("Failed to fetch weather data.");
+      messageApi.open({
+        type: "error",
+        content: "Failed to fetch weather data.",
+        className: "custom-message",
+        duration: 4,
+      });
     }
     setLoading(false);
   };
@@ -51,7 +58,12 @@ export default function HomePage() {
       getWeather(coordinates.latitude, coordinates.longitude, place);
       setCoords({ lat: coordinates.latitude, lon: coordinates.longitude });
     } else {
-      setError("Place not found.");
+      messageApi.open({
+        type: "error",
+        content: "Place not found. Please search another place.",
+        className: "custom-message",
+        duration: 4,
+      });
       setLoading(false);
     }
   };
@@ -101,68 +113,71 @@ export default function HomePage() {
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      {loading ? (
-        <Spin size="large" />
-      ) : (
-        <>
-          <div style={{ display: "flex", flexWrap: "wrap" }}>
-            {/* Left Panel */}
-            <div style={{ flex: 3, paddingRight: 20, minWidth: 300 }}>
-              <SearchLocation onSearch={handleSearch} />
-              {weatherData && (
-                <>
-                  <CurrentWeather
-                    placeName={placeName}
-                    currentWeather={{
-                      current: weatherData.current,
-                      current_units: weatherData.current_units,
-                    }}
-                    weatherCodeDetails={weatherCodeDetails}
-                  />
-                  <br />
-                  <HourlyForecast
-                    hourly={{
-                      hourly: weatherData.hourly,
-                      hourly_units: weatherData.hourly_units,
-                    }}
-                    weatherCodeDetails={weatherCodeDetails}
-                  />
-                  <br />
-                  <WeatherMap coords={coords} />
-                </>
-              )}
-            </div>
+    <>
+      {contextHolder}
+      <div style={{ padding: 20 }}>
+        {loading ? (
+          <Spin size="large" />
+        ) : (
+          <>
+            <div style={{ display: "flex", flexWrap: "wrap" }}>
+              {/* Left Panel */}
+              <div style={{ flex: 3, paddingRight: 20, minWidth: 300 }}>
+                <SearchLocation onSearch={handleSearch} />
+                {weatherData && (
+                  <>
+                    <CurrentWeather
+                      placeName={placeName}
+                      currentWeather={{
+                        current: weatherData.current,
+                        current_units: weatherData.current_units,
+                      }}
+                      weatherCodeDetails={weatherCodeDetails}
+                    />
+                    <br />
+                    <HourlyForecast
+                      hourly={{
+                        hourly: weatherData.hourly,
+                        hourly_units: weatherData.hourly_units,
+                      }}
+                      weatherCodeDetails={weatherCodeDetails}
+                    />
+                    <br />
+                    <WeatherMap coords={coords} />
+                  </>
+                )}
+              </div>
 
-            {/* Right Panel */}
-            <div style={{ flex: 1, minWidth: 250 }}>
-              {weatherData && (
-                <>
-                  <WeeklyForecast
-                    weeklyData={{
-                      daily: weatherData.daily,
-                      daily_units: weatherData.daily_units,
-                    }}
-                    weatherCodeDetails={weatherCodeDetails}
-                  />
-                  <br />
-                  <SunriseSunset
-                    weatherData={{
-                      sunrise: weatherData.daily?.sunrise,
-                      sunset: weatherData.daily?.sunset,
-                    }}
-                  />
-                  <ClothingSuggestion
-                    weatherCode={weatherData?.current?.weathercode}
-                    weatherCodeDetails={weatherCodeDetails}
-                  />
-                  <MoonPhases moonPhase={moonPhase} />
-                </>
-              )}
+              {/* Right Panel */}
+              <div style={{ flex: 1, minWidth: 250 }}>
+                {weatherData && (
+                  <>
+                    <WeeklyForecast
+                      weeklyData={{
+                        daily: weatherData.daily,
+                        daily_units: weatherData.daily_units,
+                      }}
+                      weatherCodeDetails={weatherCodeDetails}
+                    />
+                    <br />
+                    <SunriseSunset
+                      weatherData={{
+                        sunrise: weatherData.daily?.sunrise,
+                        sunset: weatherData.daily?.sunset,
+                      }}
+                    />
+                    <ClothingSuggestion
+                      weatherCode={weatherData?.current?.weathercode}
+                      weatherCodeDetails={weatherCodeDetails}
+                    />
+                    <MoonPhases moonPhase={moonPhase} />
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        </>
-      )}
-    </div>
+          </>
+        )}
+      </div>
+    </>
   );
 }

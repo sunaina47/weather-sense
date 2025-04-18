@@ -28,7 +28,7 @@ const fetchWeatherData = async (lat, lon) => {
     return response.data;
   } catch (error) {
     console.error("Error fetching weather data:", error);
-    return null;
+    return false;
   }
 };
 
@@ -54,11 +54,11 @@ const fetchPlaceName = async (lat, lon) => {
         "Unknown Location"
       );
     } else {
-      throw new Error("Unable to find the place name");
+      return false;
     }
   } catch (error) {
     console.error("Error fetching place name:", error);
-    return "Unknown Location";
+    return false;
   }
 };
 
@@ -73,14 +73,15 @@ const fetchCityCoordinates = async (place) => {
       const { latitude, longitude } = geoData.results[0];
       return { latitude, longitude };
     } else {
-      throw new Error("Place not found");
+      return false;
     }
   } catch (error) {
     console.error("Error fetching coordinates:", error);
-    return null;
+    return false;
   }
 };
 
+// Fetch Moon Phase
 const fetchMoonPhase = async (lat, lon, date) => {
   try {
     const response = await axios.get(
@@ -88,7 +89,7 @@ const fetchMoonPhase = async (lat, lon, date) => {
     );
     return response?.data;
   } catch (error) {
-    console.error(error);
+    return false;
   }
 };
 
