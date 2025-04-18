@@ -1,15 +1,6 @@
-// components/LeafletMap.js
-import React, { useEffect } from "react";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMap,
-  LayersControl,
-} from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+import React, { useEffect, useRef } from "react";
 import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import { API_KEY_OpenWeather } from "../../constants";
 
 // Fix Leaflet icon issue in Next.js
@@ -23,102 +14,100 @@ L.Icon.Default.mergeOptions({
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
-// Optional: Set map center on prop change
-const SetMapCenter = ({ coords }) => {
-  const map = useMap();
+const LeafletMap = ({ coords }) => {
+  const mapContainerRef = useRef(null); // To reference the map container
+
   useEffect(() => {
     if (coords.lat && coords.lon) {
-      map.setView([coords.lat, coords.lon], 8);
+      // Initialize the map
+      const map = L.map(mapContainerRef.current, {
+        center: [coords.lat, coords.lon],
+        zoom: 8,
+      });
+
+      // Base map layers
+      const osmLayer = L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          attribution: "&copy; OpenStreetMap contributors",
+        }
+      );
+
+      const topoLayer = L.tileLayer(
+        "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+        {
+          attribution:
+            "Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap (CC-BY-SA)",
+        }
+      );
+
+      // Overlay layers
+      const cloudsLayer = L.tileLayer(
+        `https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${API_KEY_OpenWeather}`,
+        { zIndex: 400 }
+      );
+
+      const precipitationLayer = L.tileLayer(
+        `https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${API_KEY_OpenWeather}`,
+        { zIndex: 400 }
+      );
+
+      const temperatureLayer = L.tileLayer(
+        `https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${API_KEY_OpenWeather}`,
+        { opacity: 0.9, zIndex: 400 }
+      );
+
+      const windLayer = L.tileLayer(
+        `https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${API_KEY_OpenWeather}`,
+        { zIndex: 400 }
+      );
+
+      const pressureLayer = L.tileLayer(
+        `https://tile.openweathermap.org/map/pressure_new/{z}/{x}/{y}.png?appid=${API_KEY_OpenWeather}`,
+        { zIndex: 400 }
+      );
+
+      const thunderstormLayer = L.tileLayer(
+        `https://tile.openweathermap.org/map/thunder_new/{z}/{x}/{y}.png?appid=${API_KEY_OpenWeather}`,
+        { zIndex: 400 }
+      );
+
+      // Adding layers to the map
+      osmLayer.addTo(map);
+
+      // Adding Marker
+      const marker = L.marker([coords.lat, coords.lon]).addTo(map);
+      marker.bindPopup("You are here!");
+
+      // Layer control
+      const baseMaps = {
+        OpenStreetMap: osmLayer,
+        Topography: topoLayer,
+      };
+
+      const overlayMaps = {
+        Clouds: cloudsLayer,
+        Precipitation: precipitationLayer,
+        Temperature: temperatureLayer,
+        Wind: windLayer,
+        Pressure: pressureLayer,
+        Thunderstorm: thunderstormLayer,
+      };
+
+      L.control.layers(baseMaps, overlayMaps, { collapsed: true }).addTo(map);
+
+      // Return cleanup function to remove the map on unmount
+      return () => {
+        map.remove();
+      };
     }
-  }, [coords, map]);
+  }, [coords]); // Re-run effect if coords change
 
-  return null;
-};
-
-const LeafletMap = ({ coords }) => {
   return (
-    <MapContainer
-      center={[coords.lat, coords.lon]}
-      zoom={8}
-      scrollWheelZoom={true}
+    <div
+      ref={mapContainerRef}
       style={{ height: "500px", width: "100%", borderRadius: "16px" }}
-    >
-      <SetMapCenter coords={coords} />
-
-      <LayersControl position="topright">
-        {/* Base Layer: OpenStreetMap */}
-        <LayersControl.BaseLayer checked name="Standard">
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution="&copy; OpenStreetMap contributors"
-          />
-        </LayersControl.BaseLayer>
-
-        <LayersControl.BaseLayer name="Topography">
-          <TileLayer
-            url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
-            attribution="Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap (CC-BY-SA)"
-          />
-        </LayersControl.BaseLayer>
-
-        {/* Overlay Layers from OpenWeatherMap */}
-        <LayersControl.Overlay checked name="Clouds">
-          <TileLayer
-            url={`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${API_KEY_OpenWeather}`}
-            // opacity={0.8}
-            zIndex={400}
-          />
-        </LayersControl.Overlay>
-
-        <LayersControl.Overlay name="Precipitation">
-          <TileLayer
-            url={`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${API_KEY_OpenWeather}`}
-            // opacity={0.8}
-            zIndex={400}
-          />
-        </LayersControl.Overlay>
-
-        <LayersControl.Overlay name="Temperature">
-          <TileLayer
-            url={`https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${API_KEY_OpenWeather}`}
-            opacity={0.9}
-            zIndex={400}
-          />
-        </LayersControl.Overlay>
-
-        <LayersControl.Overlay name="Wind">
-          <TileLayer
-            url={`https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${API_KEY_OpenWeather}`}
-            // opacity={0.8}
-            zIndex={400}
-          />
-        </LayersControl.Overlay>
-
-        <LayersControl.Overlay name="Pressure">
-          <TileLayer
-            url={`https://tile.openweathermap.org/map/pressure_new/{z}/{x}/{y}.png?appid=${API_KEY_OpenWeather}`}
-            // opacity={0.8}
-            zIndex={400}
-          />
-        </LayersControl.Overlay>
-
-        <LayersControl.Overlay name="Thunderstorm Activity">
-          <TileLayer
-            url={`https://tile.openweathermap.org/map/thunder_new/{z}/{x}/{y}.png?appid=${API_KEY_OpenWeather}`}
-            // opacity={1}
-            zIndex={400}
-          />
-        </LayersControl.Overlay>
-      </LayersControl>
-
-      <Marker position={[coords.lat, coords.lon]}>
-        <Popup>
-          You are here!
-          <br />
-          Lat: {coords.lat.toFixed(4)}, Lon: {coords.lon.toFixed(4)}
-        </Popup>
-      </Marker>
-    </MapContainer>
+    ></div>
   );
 };
 
