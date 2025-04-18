@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { API_KEY_OpenWeather } from "../../constants";
 
 // Fix Leaflet icon issue in Next.js
 delete L.Icon.Default.prototype._getIconUrl;
@@ -42,32 +43,32 @@ const LeafletMap = ({ coords }) => {
 
       // Overlay layers
       const cloudsLayer = L.tileLayer(
-        `https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${process.env.API_KEY_OpenWeather}`,
+        `https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${API_KEY_OpenWeather}`,
         { zIndex: 400 }
       );
 
       const precipitationLayer = L.tileLayer(
-        `https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${process.env.API_KEY_OpenWeather}`,
+        `https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${API_KEY_OpenWeather}`,
         { zIndex: 400 }
       );
 
       const temperatureLayer = L.tileLayer(
-        `https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${process.env.API_KEY_OpenWeather}`,
+        `https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${API_KEY_OpenWeather}`,
         { opacity: 0.9, zIndex: 400 }
       );
 
       const windLayer = L.tileLayer(
-        `https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${process.env.API_KEY_OpenWeather}`,
+        `https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${API_KEY_OpenWeather}`,
         { zIndex: 400 }
       );
 
       const pressureLayer = L.tileLayer(
-        `https://tile.openweathermap.org/map/pressure_new/{z}/{x}/{y}.png?appid=${process.env.API_KEY_OpenWeather}`,
+        `https://tile.openweathermap.org/map/pressure_new/{z}/{x}/{y}.png?appid=${API_KEY_OpenWeather}`,
         { zIndex: 400 }
       );
 
       const thunderstormLayer = L.tileLayer(
-        `https://tile.openweathermap.org/map/thunder_new/{z}/{x}/{y}.png?appid=${process.env.API_KEY_OpenWeather}`,
+        `https://tile.openweathermap.org/map/thunder_new/{z}/{x}/{y}.png?appid=${API_KEY_OpenWeather}`,
         { zIndex: 400 }
       );
 

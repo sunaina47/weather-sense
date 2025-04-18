@@ -1,4 +1,5 @@
 import axios from "axios";
+import { API_KEY_Weather } from "../../constants";
 
 // Fetch Weather data based on lat and lon with all available details
 const fetchWeatherData = async (lat, lon) => {
@@ -84,7 +85,7 @@ const fetchCityCoordinates = async (place) => {
 const fetchMoonPhase = async (lat, lon, date) => {
   try {
     const response = await axios.get(
-      `https://api.weatherapi.com/v1/astronomy.json?key=${process.env.API_KEY_Weather}&q=${lat},${lon}&dt=${date}`
+      `https://api.weatherapi.com/v1/astronomy.json?key=${API_KEY_Weather}&q=${lat},${lon}&dt=${date}`
     );
     return response?.data;
   } catch (error) {

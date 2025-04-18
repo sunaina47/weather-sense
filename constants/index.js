@@ -1,5 +1,5 @@
-const API_KEY_OpenWeather = process.env.API_KEY_OpenWeather;
-const API_KEY_Weather = process.env.API_KEY_Weather;
+const API_KEY_OpenWeather = process.env.NEXT_PUBLIC_API_KEY_OpenWeather;
+const API_KEY_Weather = process.env.NEXT_PUBLIC_API_KEY_Weather;
 const WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather";
 const GEO_URL = "https://api.openweathermap.org/geo/1.0/direct";
 
