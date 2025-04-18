@@ -12,7 +12,7 @@ WeatherSense is a modern weather app built with React, Next.js, and Ant Design, 
 ## 🚀 Getting Started
 
 🌍 Live Demo
-🔗 https://sunainakharangate-portfolio.vercel.app/
+🔗 https://weather-sense-by-sunaina.vercel.app/
 
 1. Clone the repository:
    ```bash
