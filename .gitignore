@@ -3,7 +3,4 @@ node_modules
 .next/
 out/
 
-# .gitignore
-constants/index.js
-
 .env
