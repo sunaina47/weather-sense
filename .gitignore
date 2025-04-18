@@ -5,3 +5,5 @@ out/
 
 # .gitignore
 constants/index.js
+
+.env
